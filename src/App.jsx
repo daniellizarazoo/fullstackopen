@@ -6,15 +6,19 @@ const Header = (props) =>{
 }
 
 const Content = (props) =>{
-
   return (
     <>
-    <p>{props.c1} {props.n1}</p>
-    <p>{props.c2} {props.n2}</p>
-    <p>{props.c3} {props.n3}</p>
+    <Part part={props.c1} nex={props.n1}/>
+    <Part part={props.c2} nex={props.n2}/>
+    <Part part={props.c3} nex={props.n3}/>
     </>
   )
+}
 
+const Part = (props)=>{
+  return(
+    <p>{props.part} {props.nex}</p>
+  )
 }
 
 const Total = (props) => {
