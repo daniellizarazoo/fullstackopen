@@ -11,10 +11,12 @@ const Statistics = ({text,counter}) => <p>{text} {counter}</p>
 const HtmlTable = (props) => {
   return (
     <table>
-    <tr>
-      <th>{props.name}</th>
-      <th>{props.value}</th>
-    </tr>
+    <thead>
+      <tr>
+        <th>{props.name}</th>
+        <th>{props.value}</th>
+      </tr>
+    </thead>
   </table>
   )
 }
@@ -110,14 +112,13 @@ const App = () =>{
       <Button text="neutral" onClick={handleNeutral}/>
       <Button text="bad" onClick={handleBad}/>
       <Titles title="statistics"/>
-      <Estadisticas total={total} 
-        good={good}
-        neutral={neutral}
-        bad={bad}
-        average={average}
-        positiveAverage={positiveAverage}
-      />
-      <HtmlTable/>
+      
+      <HtmlTable name="Good" value={good}/>
+      <HtmlTable name="Neutral" value={neutral}/>
+      <HtmlTable name="Bad" value={bad}/>
+      <HtmlTable name="all" value={total}/>
+      <HtmlTable name="Average" value={average}/>
+      <HtmlTable name="Positive" value={positiveAverage}/>
     </div>
   )
 }
