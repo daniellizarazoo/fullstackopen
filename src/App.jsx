@@ -9,7 +9,7 @@ const Titles = ({title}) => <h1>{title}</h1>
 const Statistics = ({text,counter}) => <p>{text} {counter}</p>
 
 const App = () =>{
-
+  
   const [left,setLeft] = useState(0)
   const [right,setRight] = useState(0)
   const [allClicks, setAll] = useState([])
@@ -18,6 +18,9 @@ const App = () =>{
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [average, setAverage] = useState(0)
+  const [sumatoria, setSumatoria] = useState(0)
+  const [positiveAverage,setPositiveAverage]= useState(0)
 
   const handleLeftClick = () => {
     setAll(allClicks.concat('L'))
@@ -50,16 +53,43 @@ const App = () =>{
   const handleGood = () => {
     const newValue = good+1
     setGood(newValue)
+    const lastTotal = total
+    setTotal(lastTotal+1)
+    funAverage(1,lastTotal+1)
+    promediadorPositivo(newValue,lastTotal+1)
   }
 
   const handleNeutral = () => {
     const newValue = neutral+1
     setNeutral(newValue)
+    const lastTotal = total
+    setTotal(lastTotal+1)
+    funAverage(0,lastTotal+1)
+    promediadorPositivo(good,lastTotal+1)
   }
 
   const handleBad = () => {
     const newValue = bad+1
     setBad(newValue)
+    const lastTotal = total
+    setTotal(lastTotal+1)
+    funAverage(-1,lastTotal+1)
+    promediadorPositivo(good,lastTotal+1)
+  }
+
+  const funAverage = (num,total) => {
+    const lastSum = sumatoria
+    const newValue = num + lastSum
+    setSumatoria(newValue)
+    const newAverage = total > 0 ? newValue / total : 0;
+    setAverage(newAverage)
+  }
+
+  const promediadorPositivo = (num, total) =>{
+    console.log("NUMERO DE POSITIVOS", num)
+    console.log("total ", total);
+    const newAverage = total > 0 ? num / total : 0;
+    setPositiveAverage(newAverage)
   }
 
   return(
@@ -69,9 +99,12 @@ const App = () =>{
       <Button text="neutral" onClick={handleNeutral}/>
       <Button text="bad" onClick={handleBad}/>
       <Titles title="statistics"/>
-      <Statistics text="good" counter={good}/>
-      <Statistics text="neutral" counter={neutral}/>
-      <Statistics text="bad" counter={bad}/>
+      <Statistics text="good  " counter={good}/>
+      <Statistics text="neutral  " counter={neutral}/>
+      <Statistics text="bad  " counter={bad}/>
+      <Statistics text="Total :" counter={total}/>
+      <Statistics text="Average :" counter={average}/>
+      <Statistics text="Positive average :" counter={positiveAverage}/>
     </div>
   )
 }
