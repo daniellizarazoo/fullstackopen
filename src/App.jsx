@@ -8,6 +8,17 @@ const Titles = ({title}) => <h1>{title}</h1>
 
 const Statistics = ({text,counter}) => <p>{text} {counter}</p>
 
+const HtmlTable = (props) => {
+  return (
+    <table>
+    <tr>
+      <th>{props.name}</th>
+      <th>{props.value}</th>
+    </tr>
+  </table>
+  )
+}
+
 const App = () =>{
   
   const [left,setLeft] = useState(0)
@@ -99,32 +110,39 @@ const App = () =>{
       <Button text="neutral" onClick={handleNeutral}/>
       <Button text="bad" onClick={handleBad}/>
       <Titles title="statistics"/>
-      <Statistics text="good  " counter={good}/>
-      <Statistics text="neutral  " counter={neutral}/>
-      <Statistics text="bad  " counter={bad}/>
-      <Statistics text="Total :" counter={total}/>
-      <Statistics text="Average :" counter={average}/>
-      <Statistics text="Positive average :" counter={positiveAverage}/>
+      <Estadisticas total={total} 
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        average={average}
+        positiveAverage={positiveAverage}
+      />
+      <HtmlTable/>
     </div>
   )
 }
 
-const History = (props) =>{
-  
-  if (props.allClicks.length==0){
+const Estadisticas = (props)=>{
+  if (props.total==0){
     return(
-      <div>
-        The app is used by pressing the buttons
-      </div>
+      <p>No feedback given</p>
     )
   }
   else{
     return(
-    <div>
-      button press history: {props.allClicks.join(' ')}
-    </div>)
+      <div>
+      <Statistics text="good  " counter={props.good}/>
+      <Statistics text="neutral  " counter={props.neutral}/>
+      <Statistics text="bad  " counter={props.bad}/>
+      <Statistics text="Total :" counter={props.total}/>
+      <Statistics text="Average :" counter={props.average}/>
+      <Statistics text="Positive average :" counter={props.positiveAverage}/>
+      </div>
+    )
   }
 }
+
+
 
 
 export default App
