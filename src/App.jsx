@@ -2,50 +2,51 @@ import { useState } from "react"
 import Note from './components/Note'
 
 
-const App = (props) =>{
-  const [notes,setNotes]= useState(props.notes)
-  const [newNote,setNewNote] = useState('')
-  const [showAll, setShowAll] = useState(true)
+const App =  () =>{
+  const [newFilter,setNewFilter] = useState('')
+  const [newPerson,setNewPerson] = useState('')
+  const [newNumber,setNewNumber] = useState([])
+  const [persons, setPersons] = useState([{ name: "Daniel",number:3102387649}, { name: "Maria",number:3122151678}, { name: "John",number:3508067461 }])
 
-  const addNote = (event) =>{
+  const handleNewPersonsChange = (event) =>{
+    setNewPerson(event.target.value)
+  }
+
+  const handleNewNumberChange = (event) => setNewNumber(event.target.value)
+
+  const createNewPerson = (event) => {
     event.preventDefault()
-    console.log('button.clicked', event.target)
-    const noteObject={
-      content:newNote,
-      important: Math.random() < 0.5,
-      id : notes.length +1,
-    }
-    setNotes(notes.concat(noteObject))
-    setNewNote('')
-  }
+    !persons.some(person=> person.name == newPerson) ?
+    setPersons(persons.concat({name: newPerson,number: newNumber}))
+    : alert(`${newPerson} is already added to phonebook`)
+}
 
-  const handleNoteChange = (event) =>{
-    console.log('event.target.value', event.target.value)
-    setNewNote(event.target.value)
-  }
+const handleNewFilter = (event) => setNewFilter(event.target.value);
 
-  const handleShowAll = ()=> showAll ? setShowAll(false):setShowAll(true)
-  
-  const notesToShow = showAll
-  ? notes
-  : notes.filter (note=> note.important==true)
-  
+const personFound = persons.find(person => person.name === newFilter);
+
   return(
     <div>
-      <h1>Notes</h1>
-      <ul>
-        {notesToShow.map(note=>
-          <Note key={note.id} note={note}/>)}
-      </ul>
-      <form onSubmit={addNote}>
-        <input  
-        value={newNote}
-        onChange={handleNoteChange}
-        placeholder='Insert a note'
-        />
-        <button type='submit'>save</button>
+      <h2>Phonebook</h2>
+      <input placeholder="ingrese nombre a buscar" value={newFilter} onChange={handleNewFilter}></input>
+      <form onSubmit={createNewPerson}>
+        <div>
+          <h3> Name:</h3>
+          <input placeholder="phonebook name" value={newPerson} onChange={handleNewPersonsChange}></input>
+          <input placeholder="phone" value={newNumber} onChange={handleNewNumberChange}></input>
+        </div>
+        <button type="submit">enviar</button>
       </form>
-      <button onClick={handleShowAll}>Show only: {showAll?'important':'all'}</button>
+      <h2>Persons:</h2>
+      {
+        newFilter.length > 0 ? 
+        (
+        personFound !== undefined ? 
+        <p>{personFound.name} {personFound.number}</p> : 
+        <p>nombre no encontrado</p>
+        )
+        : persons.map(person =><p key={person.name}>{person.name} {person.number}</p>)
+      }
     </div>
   )
 }
