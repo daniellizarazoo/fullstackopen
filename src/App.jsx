@@ -1,52 +1,55 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Note from './components/Note'
+import Titles from "./components/Titles"
+import Button from "./components/Buttons"
+import Input from './components/Input'
+import Form from "./components/Form"
+import axios from 'axios'
 
+const App = () => {
+  const [notes,setNotes] = useState([])
+  const [newNote,setNewNote] = useState('')
+  const [showAll,setShowAll] = useState(true)
 
-const App =  () =>{
-  const [newFilter,setNewFilter] = useState('')
-  const [newPerson,setNewPerson] = useState('')
-  const [newNumber,setNewNumber] = useState([])
-  const [persons, setPersons] = useState([{ name: "Daniel",number:3102387649}, { name: "Maria",number:3122151678}, { name: "John",number:3508067461 }])
+  useEffect(()=>{
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response=>{
+        setNotes(response.data)
+      })
+  },[])
 
-  const handleNewPersonsChange = (event) =>{
-    setNewPerson(event.target.value)
-  }
+  const handleShowAll = () => setShowAll(!showAll)
 
-  const handleNewNumberChange = (event) => setNewNumber(event.target.value)
+  const handleChangesOnNewValue = (event) => setNewNote(event.target.value)
 
-  const createNewPerson = (event) => {
-    event.preventDefault()
-    !persons.some(person=> person.name == newPerson) ?
-    setPersons(persons.concat({name: newPerson,number: newNumber}))
-    : alert(`${newPerson} is already added to phonebook`)
-}
-
-const handleNewFilter = (event) => setNewFilter(event.target.value);
-
-const personFound = persons.find(person => person.name === newFilter);
+  const handleNewNote = () => setNotes(notes.concat({'content':newNote,'id':notes.length+1,'important':Math.random()<0.5}))
 
   return(
     <div>
-      <h2>Phonebook</h2>
-      <input placeholder="ingrese nombre a buscar" value={newFilter} onChange={handleNewFilter}></input>
-      <form onSubmit={createNewPerson}>
-        <div>
-          <h3> Name:</h3>
-          <input placeholder="phonebook name" value={newPerson} onChange={handleNewPersonsChange}></input>
-          <input placeholder="phone" value={newNumber} onChange={handleNewNumberChange}></input>
-        </div>
-        <button type="submit">enviar</button>
-      </form>
-      <h2>Persons:</h2>
-      {
-        newFilter.length > 0 ? 
-        (
-        personFound !== undefined ? 
-        <p>{personFound.name} {personFound.number}</p> : 
-        <p>nombre no encontrado</p>
-        )
-        : persons.map(person =><p key={person.name}>{person.name} {person.number}</p>)
+      <Titles title='Notas'/>
+      <Button 
+        text={showAll?'Show importants':'Show all'}
+        onClick={handleShowAll}
+      />
+      {showAll
+        ? <Note notes={notes}/>
+        :<Note notes={notes.filter(note=>note.important==true)}/>
       }
+      <Titles title='Add new note:' h={2}/>
+      <Input 
+        placeholder='Add new note' 
+        value={newNote} 
+        onChange={handleChangesOnNewValue}
+      />
+      <Button
+        text='Add'
+        onClick={handleNewNote}
+      />
+      <Form num_labels={2}
+        l1={['text holder', handleNewNote]}
+      />
+
     </div>
   )
 }
