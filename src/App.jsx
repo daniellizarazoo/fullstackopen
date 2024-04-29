@@ -9,11 +9,11 @@ import axios from 'axios'
 const App = () => {
   const [notes,setNotes] = useState([])
   const [newNote,setNewNote] = useState('')
-  const [showAll,setShowAll] = useState(true)
+  const [newPhone,setNewPhone] = useState('')
 
   useEffect(()=>{
     axios
-      .get('http://localhost:3001/notes')
+      .get('http://localhost:3001/persons')
       .then(response=>{
         setNotes(response.data)
       })
@@ -23,31 +23,36 @@ const App = () => {
 
   const handleChangesOnNewValue = (event) => setNewNote(event.target.value)
 
-  const handleNewNote = () => setNotes(notes.concat({'content':newNote,'id':notes.length+1,'important':Math.random()<0.5}))
+  const handleChangeOnPhone = (event)=> setNewPhone(event.target.value)
+
+  const handleAddingNewPhones = (event) => {
+    event.preventDefault()
+    const exists = notes.find(data=>data.name===newNote)?
+    alert('Name already exists within the list') : setNotes(notes.concat({'name':newNote,'id':notes.length+1,'number':newPhone}))
+    setNewNote('')
+    setNewPhone('')
+  }
 
   return(
     <div>
-      <Titles title='Notas'/>
-      <Button 
-        text={showAll?'Show importants':'Show all'}
-        onClick={handleShowAll}
-      />
-      {showAll
-        ? <Note notes={notes}/>
-        :<Note notes={notes.filter(note=>note.important==true)}/>
-      }
-      <Titles title='Add new note:' h={2}/>
-      <Input 
-        placeholder='Add new note' 
-        value={newNote} 
-        onChange={handleChangesOnNewValue}
-      />
-      <Button
-        text='Add'
-        onClick={handleNewNote}
-      />
-      <Form num_labels={2}
-        l1={['text holder', handleNewNote]}
+      <Titles title='Persons'/>
+      <Note persons={notes}/>
+      <Titles title='Add new person:' h={2}/>
+      <Form
+        labels={
+          ['Name','PhoneNumber']
+        }
+        inputs={[{
+          placeholder : 'Add a name',
+          value : newNote,
+          onChange: handleChangesOnNewValue
+        },
+        {
+          placeholder : 'Add a number',
+          value : newPhone,
+          onChange: handleChangeOnPhone
+        }]}
+        onClick= {handleAddingNewPhones}
       />
 
     </div>

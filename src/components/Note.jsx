@@ -1,5 +1,5 @@
-const Note = ({notes}) => {
-    const note = notes.map(note=><li key={note.id}>{note.content}</li>)
+const Note = ({persons}) => {
+    const note = persons.map(note=><li key={note.id}>{note.name} num {note.number}</li>)
     return(
         <ul>
             {note}
