@@ -9,11 +9,11 @@ import axios from 'axios'
 const App = () => {
   const [notes,setNotes] = useState([])
   const [newNote,setNewNote] = useState('')
-  const [newPhone,setNewPhone] = useState('')
+  const [showAll,setShowAll] = useState(true)
 
   useEffect(()=>{
     axios
-      .get('http://localhost:3001/persons')
+      .get('http://localhost:3001/notes')
       .then(response=>{
         setNotes(response.data)
       })
@@ -23,38 +23,53 @@ const App = () => {
 
   const handleChangesOnNewValue = (event) => setNewNote(event.target.value)
 
-  const handleChangeOnPhone = (event)=> setNewPhone(event.target.value)
-
-  const handleAddingNewPhones = (event) => {
+  const handleNewNote = (event) => {
     event.preventDefault()
-    const exists = notes.find(data=>data.name===newNote)?
-    alert('Name already exists within the list') : setNotes(notes.concat({'name':newNote,'id':notes.length+1,'number':newPhone}))
-    setNewNote('')
-    setNewPhone('')
+    const noteObject = {
+      id: notes.length+1,
+      content: newNote,
+      important: Math.random() < 0.5
+    }
+
+    axios
+      .post('http://localhost:3001/notes',noteObject)
+      .then(response =>{
+        setNotes(notes.concat(response.data))
+        setNewNote('')
+      })
+  }
+
+  const toggleImportanceOf = (id) => {
+    const url = `http://localhost:3001/notes/${id}`;
+    const note = notes.find(n=>n.id==id)
+    const changedNote = {...note, important: !note.important}
+    
+    axios.put(url, changedNote).then(response =>{
+      setNotes(notes.map(n=> n.id !== id? n:response.data))
+    })
   }
 
   return(
     <div>
-      <Titles title='Persons'/>
-      <Note persons={notes}/>
-      <Titles title='Add new person:' h={2}/>
-      <Form
-        labels={
-          ['Name','PhoneNumber']
-        }
-        inputs={[{
-          placeholder : 'Add a name',
-          value : newNote,
-          onChange: handleChangesOnNewValue
-        },
-        {
-          placeholder : 'Add a number',
-          value : newPhone,
-          onChange: handleChangeOnPhone
-        }]}
-        onClick= {handleAddingNewPhones}
+      <Titles title='Notas'/>
+      <Button 
+        text={showAll?'Show importants':'Show all'}
+        onClick={handleShowAll}
       />
-
+      {showAll
+        ? <Note notes={notes} toggleImportance={toggleImportanceOf}/>
+        :<Note notes={notes.filter(note=>note.important==true)} toggleImportance={toggleImportanceOf}/>
+      }
+      <Titles title='Add new note:' h={2}/>
+      <form onSubmit={handleNewNote}>
+        <Input 
+          placeholder='Add new note' 
+          value={newNote} 
+          onChange={handleChangesOnNewValue}
+        />
+        <button type="submit">Add</button>
+      </form>
+      
     </div>
   )
 }

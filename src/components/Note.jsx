@@ -1,5 +1,17 @@
-const Note = ({persons}) => {
-    const note = persons.map(note=><li key={note.id}>{note.name} num {note.number}</li>)
+import React from "react"
+
+const Note = ({notes,toggleImportance}) => {
+    
+    const note = notes.map(note=>{
+        const label = note.important?
+        'make not important' : 'make important'
+        return (
+            <React.Fragment key={note.id}>
+                <li>{note.content}</li>
+                <button onClick={()=>toggleImportance(note.id)}>{label}</button>
+            </React.Fragment>
+        )
+    })
     return(
         <ul>
             {note}
