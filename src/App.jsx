@@ -28,8 +28,11 @@ const App = () => {
     event.preventDefault()
     const data= notes.find(data=>data.name===newNote)
     data?
-    nameAlreadyExists(data) : setNotes(notes.concat({'name':newNote,'id':+notes.length+1,'number':newPhone}))
-    // phonebook.addNewPhone({'id':+notes.length+1,'name':newNote,'number':newPhone})
+    nameAlreadyExists(data) : phonebook.addNewPhone({'id':+notes.length+1,'name':newNote,'number':newPhone} )
+    phonebook
+      .getAll()
+      .then(r=>setNotes(r))
+      .catch(e=>console.log(e))
     setNewNote('')
     setNewPhone('')
   }
@@ -39,7 +42,13 @@ const App = () => {
     if (window.confirm(data.name +' already exists in the list, wanna update it"s number?')){
       const modifiedObject= {...data,number:newPhone}
       console.log('modifiedObject', modifiedObject)
-      phonebook.updatePhone(data.id,modifiedObject)
+      phonebook.updatePhone(data.id,modifiedObject).then(
+        phonebook
+        .getAll()
+        .then(r=>setNotes(r))
+        .catch(e=>console.log(e))
+      )
+      
     }
   }
 

@@ -26,7 +26,7 @@ const addNewPhone = async (newObject) => {
 const deletePhone = async (id) => {
     try{
         const urlModified = baseUrl+`/${id}`
-        const request = await axios.delete(urlModified)
+        await axios.delete(urlModified)
         console.log('la data ha sido eliminado')
         
     }
@@ -38,7 +38,7 @@ const deletePhone = async (id) => {
 const updatePhone = async (id,modifiedObject) =>{
     try{
         const urlModified = baseUrl+`/${id}`
-        await axios.put(url,modifiedObject)
+        await axios.put(urlModified,modifiedObject)
     }
     catch(error){
         throw error
