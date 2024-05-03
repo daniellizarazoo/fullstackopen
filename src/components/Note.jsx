@@ -4,7 +4,7 @@ const Note = ({ persons, deletePhone}) => {
     const note = persons.map((note) => {
         return (
         <Fragment key={note.id}>
-            <li>{note.name} num {note.number}</li>
+            <li className="note">{note.name} num {note.number}</li>
             <button onClick={()=>deletePhone(note.id)} style={{backgroundColor:'cyan'}}>delete</button>
         </Fragment>
         );
