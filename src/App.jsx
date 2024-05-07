@@ -4,6 +4,7 @@ import Titles from "./components/Titles"
 import Button from "./components/Buttons"
 import Input from './components/Input'
 import Form from "./components/Form"
+import Notification from "./components/Notifications"
 import axios from 'axios'
 import phonebook from "./services/phonebook"
 
@@ -28,11 +29,19 @@ const App = () => {
     event.preventDefault()
     const data= notes.find(data=>data.name===newNote)
     data?
-    nameAlreadyExists(data) : phonebook.addNewPhone({'id':+notes.length+1,'name':newNote,'number':newPhone} )
-    phonebook
-      .getAll()
-      .then(r=>setNotes(r))
-      .catch(e=>console.log(e))
+    nameAlreadyExists(data) : phonebook.addNewPhone({'id':+notes.length+1,'name':newNote,'number':newPhone})
+    .then(() => {
+      phonebook.getAll()
+        .then((r) => {
+          setNotes(r);
+          setNewNote('');
+          setNewPhone('');
+        })
+        .catch((e) => console.log(e));
+    })
+    .catch((e) => console.log(e));
+    
+    
     setNewNote('')
     setNewPhone('')
   }
