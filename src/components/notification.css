@@ -1,0 +1,6 @@
+.notification {
+    border: 2px solid blue; /* Ajusta el ancho y el estilo del borde según sea necesario */
+    border-radius: 20px; /* Ajusta el radio de la esquina redondeada según sea necesario */
+    font-style: italic;
+    font-size: 40px;
+}

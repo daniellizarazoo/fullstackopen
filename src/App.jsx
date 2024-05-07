@@ -12,6 +12,7 @@ const App = () => {
   const [notes,setNotes] = useState([])
   const [newNote,setNewNote] = useState('')
   const [newPhone,setNewPhone] = useState('')
+  const [notification,setNotification]= useState(null)
 
   useEffect(()=>{
   phonebook
@@ -36,6 +37,11 @@ const App = () => {
           setNotes(r);
           setNewNote('');
           setNewPhone('');
+        }).then(()=>{
+          setNotification('Name added to the phonebook')
+          setTimeout(()=>{
+            setNotification(null)
+          },3000)
         })
         .catch((e) => console.log(e));
     })
@@ -47,17 +53,19 @@ const App = () => {
   }
 
   const nameAlreadyExists = (data) => {
-    console.log('data', data)
     if (window.confirm(data.name +' already exists in the list, wanna update it"s number?')){
       const modifiedObject= {...data,number:newPhone}
-      console.log('modifiedObject', modifiedObject)
       phonebook.updatePhone(data.id,modifiedObject).then(
         phonebook
         .getAll()
         .then(r=>setNotes(r))
         .catch(e=>console.log(e))
-      )
-      
+      ).then( ()=>{
+        setNotification('The name has been modified')
+        setTimeout(()=>{
+          setNotification(null)
+        },4000)
+      })
     }
   }
 
@@ -78,6 +86,7 @@ const App = () => {
     <div>
       <Titles title='Persons'/>
       <Note persons={notes} deletePhone={deletePhone}/>
+      <Notification message={notification}/>
       <Titles title='Add new person:' h={2}/>
       <Form
         labels={
