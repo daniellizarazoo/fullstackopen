@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl= 'http://localhost:3001/persons'
+const baseUrl= 'http://localhost:3001/api/persons'
 
 const getAll = async () => {
     try{
@@ -15,11 +15,11 @@ const getAll = async () => {
 const addNewPhone = async (newObject) => {
     try{
         const request = await axios.post(baseUrl,newObject)
+        console.log('request.data', request.data);
         return request.data
     }
     catch(error){
-        console.log('Error.message: ', error.message)
-        throw error
+        return error
     }
 }
 

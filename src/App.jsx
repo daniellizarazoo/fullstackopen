@@ -28,28 +28,27 @@ const App = () => {
 
   const handleAddingNewPhones = (event) => {
     event.preventDefault()
-    const data= notes.find(data=>data.name===newNote)
-    data?
-    nameAlreadyExists(data) : phonebook.addNewPhone({'id':+notes.length+1,'name':newNote,'number':newPhone})
-    .then(() => {
-      phonebook.getAll()
-        .then((r) => {
-          setNotes(r);
-          setNewNote('');
-          setNewPhone('');
-        }).then(()=>{
-          setNotification('Name added to the phonebook')
+    phonebook.addNewPhone({'name':newNote,'number':newPhone})
+      .then((r)=>{
+        try{
+          setNotification(r.response.data)
           setTimeout(()=>{
             setNotification(null)
-          },3000)
-        })
-        .catch((e) => console.log(e));
-    })
-    .catch((e) => console.log(e));
-    
-    
-    setNewNote('')
-    setNewPhone('')
+          },5000)
+        } catch{
+          setNotification(r)
+          setTimeout(()=>{
+            setNotification(null)
+          },5000)
+          phonebook.getAll()
+            .then((r)=>{
+              setNotes(r)
+            })
+        }
+      })
+      .catch((e)=>{
+        console.log('e :>> ', e);
+      })
   }
 
   const nameAlreadyExists = (data) => {
