@@ -1,4 +1,4 @@
-import React from "react";
+/* eslint-disable react/prop-types */
 import { Fragment } from "react";
 const Note = ({ persons, deletePhone}) => {
     const note = persons.map((note) => {

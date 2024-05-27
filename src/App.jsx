@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react"
 import Note from './components/Note'
 import Titles from "./components/Titles"
-import Button from "./components/Buttons"
-import Input from './components/Input'
 import Form from "./components/Form"
 import Notification from "./components/Notifications"
-import axios from 'axios'
 import phonebook from "./services/phonebook"
 
 const App = () => {
@@ -17,10 +14,9 @@ const App = () => {
   useEffect(()=>{
   phonebook
     .getAll()
-    .then(r=>setNotes(r))
+    .then(r=>{
+      setNotes(r)})
     .catch(e=>console.log(e))},[])
-
-  const handleShowAll = () => setShowAll(!showAll)
 
   const handleChangesOnNewValue = (event) => setNewNote(event.target.value)
 
@@ -51,22 +47,22 @@ const App = () => {
       })
   }
 
-  const nameAlreadyExists = (data) => {
-    if (window.confirm(data.name +' already exists in the list, wanna update it"s number?')){
-      const modifiedObject= {...data,number:newPhone}
-      phonebook.updatePhone(data.id,modifiedObject).then(
-        phonebook
-        .getAll()
-        .then(r=>setNotes(r))
-        .catch(e=>console.log(e))
-      ).then( ()=>{
-        setNotification('The name has been modified')
-        setTimeout(()=>{
-          setNotification(null)
-        },4000)
-      })
-    }
-  }
+  // const nameAlreadyExists = (data) => {
+  //   if (window.confirm(data.name +' already exists in the list, wanna update it"s number?')){
+  //     const modifiedObject= {...data,number:newPhone}
+  //     phonebook.updatePhone(data.id,modifiedObject).then(
+  //       phonebook
+  //       .getAll()
+  //       .then(r=>setNotes(r))
+  //       .catch(e=>console.log(e))
+  //     ).then( ()=>{
+  //       setNotification('The name has been modified')
+  //       setTimeout(()=>{
+  //         setNotification(null)
+  //       },4000)
+  //     })
+  //   }
+  // }
 
   const deletePhone = (id) => {
     const found = notes.find((note) => note.id==id)
