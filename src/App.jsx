@@ -1,107 +1,94 @@
 import { useState, useEffect } from "react"
 import Note from './components/Note'
+import Blog from "./components/Blogs"
 import Titles from "./components/Titles"
 import Form from "./components/Form"
 import Notification from "./components/Notifications"
-import phonebook from "./services/phonebook"
+import blogsapi from "./services/blogsapi"
+import loginService from "./services/loginService"
 
 const App = () => {
-  const [notes,setNotes] = useState([])
-  const [newNote,setNewNote] = useState('')
-  const [newPhone,setNewPhone] = useState('')
-  const [notification,setNotification]= useState(null)
+const [user,setUser] = useState(null)
+const [username,setUsername] = useState("")
+const [password,setPassword] = useState("")
+const [errorMessage,setErrorMessage] = useState(null)
+const [blogs,setBlogs] = useState([])
+const [title,setTitle] = useState("")
+const [author,setAuthor] = useState("")
+const [url,setUrl] = useState("")
+const [likes,setLikes] = useState("")
 
-  useEffect(()=>{
-  phonebook
-    .getAll()
-    .then(r=>{
-      setNotes(r)})
-    .catch(e=>console.log(e))},[])
-
-  const handleChangesOnNewValue = (event) => setNewNote(event.target.value)
-
-  const handleChangeOnPhone = (event)=> setNewPhone(event.target.value)
-
-  const handleAddingNewPhones = (event) => {
-    event.preventDefault()
-    phonebook.addNewPhone({'name':newNote,'number':newPhone})
-      .then((r)=>{
-        try{
-          setNotification(r.response.data)
-          setTimeout(()=>{
-            setNotification(null)
-          },5000)
-        } catch{
-          setNotification(r)
-          setTimeout(()=>{
-            setNotification(null)
-          },5000)
-          phonebook.getAll()
-            .then((r)=>{
-              setNotes(r)
-            })
-        }
-      })
-      .catch((e)=>{
-        console.log('e :>> ', e);
-      })
+useEffect(()=>{
+  const fetchBlogs = async () =>{
+    try{
+      const blogs = await blogsapi.getBlogs()
+      setBlogs(blogs)
+    } catch (error){
+      throw(error)
+    }
   }
+  if(user){fetchBlogs()}
+  console.log(user);
+},[user])
 
-  // const nameAlreadyExists = (data) => {
-  //   if (window.confirm(data.name +' already exists in the list, wanna update it"s number?')){
-  //     const modifiedObject= {...data,number:newPhone}
-  //     phonebook.updatePhone(data.id,modifiedObject).then(
-  //       phonebook
-  //       .getAll()
-  //       .then(r=>setNotes(r))
-  //       .catch(e=>console.log(e))
-  //     ).then( ()=>{
-  //       setNotification('The name has been modified')
-  //       setTimeout(()=>{
-  //         setNotification(null)
-  //       },4000)
-  //     })
-  //   }
-  // }
-
-  const deletePhone = (id) => {
-    const found = notes.find((note) => note.id==id)
-    if (window.confirm("Do you really want to delete "+ found.name)) {
-      phonebook.deletePhone(id)
-        .then(() => {
-          phonebook.getAll()
-            .then((updatedNotes) => setNotes(updatedNotes))
-            .catch((error) => console.log("Error updating notes after deleting phone:", error));
-        })
-        .catch((error) => console.log("Error deleting phone:", error));
+const handleSubmitForm = async (event) => {
+  event.preventDefault()
+  try{
+    const user = await loginService.login({username,password})
+    setUser(user)
+    setUsername("")
+    setPassword("")
+  }catch (exception){
+    setErrorMessage("Wrong credentials")
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000);
   }
-  }
-
-  return(
-    <div>
-      <Titles title='Persons'/>
-      <Note persons={notes} deletePhone={deletePhone}/>
-      <Notification message={notification}/>
-      <Titles title='Add new person:' h={2}/>
-      <Form
-        labels={
-          ['Name','PhoneNumber']
-        }
-        inputs={[{
-          placeholder : 'Add a name',
-          value : newNote,
-          onChange: handleChangesOnNewValue
-        },
-        {
-          placeholder : 'Add a number',
-          value : newPhone,
-          onChange: handleChangeOnPhone
-        }]}
-        onClick= {handleAddingNewPhones}
-      />
-
-    </div>
-  )
 }
 
-export default App
+  const loginForm = () => {
+    return(
+      <Form 
+      labels={["Username","Password"]}
+      inputs={[
+        {
+          placeholder: "username or email",
+          value: username,
+          onChange: (event) =>{setUsername(event.target.value)}
+        },
+        {
+          type:"password",
+          placeholder: "password",
+          value: password,
+          onChange: (event) =>{setPassword(event.target.value)}
+        }
+      ]}
+      onClick = {handleSubmitForm}
+    />
+    )
+  }
+
+  const createNewBlog = ()=>{
+    <Form
+      labels={["Title","Author","Url","Likes"]}
+      inputs={[
+        {
+
+        }
+      ]}
+    />
+  }
+
+return(
+  <div>
+    <Titles title="BLOGS" h={1}/>
+    <Notification message={errorMessage}/>
+    {user==null && loginForm()}
+    <Blog blogs={blogs}/>
+
+  </div>
+)
+
+}
+
+export default App;
