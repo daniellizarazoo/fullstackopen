@@ -21,21 +21,23 @@ const [likes,setLikes] = useState("")
 useEffect(()=>{
   const fetchBlogs = async () =>{
     try{
-      const blogs = await blogsapi.getBlogs()
+      const blogs = await blogsapi.getBlogsByUser()
+      console.log(blogs);
       setBlogs(blogs)
     } catch (error){
       throw(error)
     }
   }
   if(user){fetchBlogs()}
-  console.log(user);
+  
 },[user])
 
 const handleSubmitForm = async (event) => {
   event.preventDefault()
   try{
     const user = await loginService.login({username,password})
-    setUser(user)
+    setUser(user.token)
+    blogsapi.setToken(user.token)
     setUsername("")
     setPassword("")
   }catch (exception){
