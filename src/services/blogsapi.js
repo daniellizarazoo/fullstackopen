@@ -5,7 +5,6 @@ let token = null
 
 const setToken = newToken =>{
     token = `Bearer ${newToken}` 
-    console.log(token);
 }
 
 const getBlogs = async () => {
@@ -14,8 +13,7 @@ const getBlogs = async () => {
         return request.data
     }
     catch(error){
-        console.log('Fail: ', error.message)
-        throw error
+        throw(error)
     }
 }
 
@@ -25,10 +23,11 @@ const getBlogsByUser = async () => {
             headers: {Authorization: token},
         }
         const request = await axios.get(`${baseUrl}/fromuser`,config)
+        
         return request.data
 
     } catch(error){
-        throw(error)
+       return error.response.status
     }
 }
 
