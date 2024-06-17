@@ -19,7 +19,7 @@ const Form = ({ labels, inputs,onClick}) => {
     return (
         <form>
             {dataForm}
-            <button type='submit' onClick={onClick}>Login</button>
+            <button type='submit' onClick={onClick}>Submit</button>
         </form>
     )
 }

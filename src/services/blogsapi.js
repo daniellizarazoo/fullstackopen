@@ -31,10 +31,13 @@ const getBlogsByUser = async () => {
     }
 }
 
-const create = async newObject => {
+const create = async newBlog => {
     const config = {
-
+        headers: {Authorization: token},
     }
+    const request = await axios.post(baseUrl,newBlog,config)
+    
+    // return request.data
 }
 
-export  default {getBlogs,setToken,getBlogsByUser}
+export  default {getBlogs,setToken,getBlogsByUser,create}

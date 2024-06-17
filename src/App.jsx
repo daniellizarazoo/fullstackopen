@@ -13,10 +13,12 @@ const App = () => {
   const [password,setPassword] = useState("")
   const [errorMessage,setErrorMessage] = useState(null)
   const [blogs,setBlogs] = useState([])
-  const [title,setTitle] = useState("")
-  const [author,setAuthor] = useState("")
-  const [url,setUrl] = useState("")
-  const [likes,setLikes] = useState("")
+  const [toCreateBlog,setToCreateBlog] = useState({
+    title:"",
+    author:"",
+    url:"",
+    likes:0
+  })
   const [rememberMe,setRememberMe] = useState(false)
 
   useEffect(()=>{
@@ -102,7 +104,6 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    console.log("button clicked");
     setUser(null)
     setBlogs([])
     window.localStorage.clear()
@@ -110,16 +111,44 @@ const App = () => {
   }
 
   const createNewBlog = ()=>{
-    <Form
-      labels={["Title","Author","Url","Likes"]}
-      inputs={[
-        {
-
-        }
-      ]}
-    />
+    return(
+     <Form
+     labels = {["Title","Author","Url","Likes"]}
+     inputs = {[{
+        placeholder: "Title",
+        value: toCreateBlog.title,
+        onChange: (event) =>{setToCreateBlog({...toCreateBlog,title:event.target.value})}
+     },
+    {
+      placeholder: "Author",
+      value: toCreateBlog.author,
+      onChange: (event) =>{setToCreateBlog({...toCreateBlog,author:event.target.value})} 
+    },
+    {
+      placeholder: "Url",
+      value: toCreateBlog.url,
+      onChange: (event) =>{setToCreateBlog({...toCreateBlog,url:event.target.value})}
+    },
+    {
+      placeholder: "Likes",
+      value: toCreateBlog.likes,
+      onChange: (event) =>{setToCreateBlog({...toCreateBlog,likes:event.target.value})}
+    }
+  ]}
+    onClick={handleCreateNewBlog}
+     />
+    )
   }
 
+  const handleCreateNewBlog = (event)=> {
+    event.preventDefault()
+    const fetchBlogsWhenCreated= async()=>{
+      await blogsapi.create(toCreateBlog)
+      const data = await blogsapi.getBlogsByUser()
+      setBlogs(data)
+    }
+    fetchBlogsWhenCreated()
+  }
   return(
     <div>
       <Titles title="BLOGS" h={1}/>
@@ -130,6 +159,7 @@ const App = () => {
           LogOut
         </button>
     )}
+      {user!=null && createNewBlog()}
       <Blog blogs={blogs}/>
     </div>
   )
