@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react"
 import Note from './components/Note'
+import Probando from "./components/Probando"
 import Blog from "./components/Blogs"
 import Titles from "./components/Titles"
 import Form from "./components/Form"
 import Notification from "./components/Notifications"
 import blogsapi from "./services/blogsapi"
 import loginService from "./services/loginService"
+import Togglable from "./components/Togglable"
 
 const App = () => {
+  const [loginVisible,setLoginVisible] = useState(false)
   const [user,setUser] = useState(null)
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
@@ -20,6 +23,18 @@ const App = () => {
     likes:0
   })
   const [rememberMe,setRememberMe] = useState(false)
+  
+  const addNote = (noteObject) => {
+    console.log("Note Object>>>", noteObject);
+  }
+
+  const noteForm = () =>{
+    return(
+      <Togglable buttonLabel='new note'>
+      <Probando createNote={addNote}/>
+    </Togglable>
+    )
+  }
 
   useEffect(()=>{
     const fetchBlogs = async () =>{
@@ -149,6 +164,13 @@ const App = () => {
     }
     fetchBlogsWhenCreated()
   }
+
+  const addNewBLog = () => {
+    <Togglable>
+      
+    </Togglable>
+  }
+
   return(
     <div>
       <Titles title="BLOGS" h={1}/>
@@ -161,6 +183,7 @@ const App = () => {
     )}
       {user!=null && createNewBlog()}
       <Blog blogs={blogs}/>
+      {noteForm()}
     </div>
   )
 

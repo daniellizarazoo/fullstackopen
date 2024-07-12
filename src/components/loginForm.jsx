@@ -1,11 +1,13 @@
 import Form from "./Form"
 
-const loginForm = ({
+const LoginForm = ({
     handleSubmit,
     handleUsernameChange,
     handlePasswordChange,
     username,
-    password
+    password,
+    rememberMe,
+    setRememberMe
 }) => {
     return(
         <>
@@ -27,9 +29,11 @@ const loginForm = ({
       onClick = {handleSubmit}
     />
     <label>
-      <input type="checkbox" checked={rememberMe} onChange={(event) =>{setRememberMe(event.target.checked)}}/>
+      <input type="checkbox" checked={rememberMe} onChange={setRememberMe}/>
       remember me?
     </label>
     </>
     )
 }
+
+export default LoginForm
